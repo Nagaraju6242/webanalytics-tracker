@@ -1,0 +1,8 @@
+.track-data .main-data {
+	display: grid;
+	grid-template-columns: fit-content(100%) 1fr;
+}
+
+.track-data .main-data tr td {
+	padding-right: 50px;
+}
