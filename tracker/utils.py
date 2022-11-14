@@ -77,5 +77,15 @@ def generate_logs(n):
     f.close()
 
 
+def get_frontend_snippet(trackId):
+    FRONTEND_JS_SNIPPET = (
+        '<script>const track_url="http://127.0.0.1:8000/api/track/",trackId="'
+        + trackId
+        + '",trackable_events_url=`http://127.0.0.1:8000/api/trackable_events/${trackId}/`;var scrolled=!0,head=document.getElementsByTagName("head")[0],script=document.createElement("script");async function sendData(e){return e.origin=location.origin,e.trackId=trackId,config={method:"POST",body:JSON.stringify(e)},res=await fetch(track_url,e=config),await res.json()}async function handler(){pageLoadData={eventType:"pageview",eventName:document.title},sendData(pageLoadData),trackable_events=await get_trackable_events(),add_event_listeners(trackable_events)}async function get_trackable_events(){return response=await fetch(trackable_events_url),data=await response.json(),"ok"==data.status?data.data:null}function add_event_listeners(e){e.forEach((e=>{"click"==e.type&&(selector="",e.html_selector?selector=e.html_selector:(e.html_tag&&(selector+=e.html_tag),e.html_id&&(selector+=`#${e.html_id}`),e.html_class&&(selector+=`.${e.html_class}`)),$(selector).on("click",(function(t){t.preventDefault(),clickData={eventType:"click",eventName:e.name},sendData(clickData)})))})),window.onscroll=function(){scrollData={eventType:"scroll",eventName:document.title},scrolled&&(sendData(scrollData),scrolled=!1,setTimeout((function(){scrolled=!0}),5e3))}}script.type="text/javascript",script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js",script.onreadystatechange=handler,script.onload=handler,head.appendChild(script);</script>'
+    )
+    return FRONTEND_JS_SNIPPET
+
+
 if __name__ == "__main__":
-    generate_logs(600)
+    # generate_logs(600)
+    print(get_frontend_snippet("LOD9755CQT"))

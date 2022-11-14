@@ -50,11 +50,14 @@
 						<a type="button" href="/dashboard/" class="btn btn-success"
 							>Dashboard</a
 						>
+						<a type="button" href="/logout/" class="btn btn-danger"
+							>Logout</a
+						>
 						{% else %}
-						<button type="button" class="btn btn-light text-dark me-2">
-							Login
-						</button>
-						<button type="button" class="btn btn-primary">Sign-up</button>
+						<a type="button" href="/accounts/login/" class="btn btn-success">Login</a>
+						<a type="button" href="/accounts/register/" class="btn btn-primary">
+							Register</a>
+						
 						{% endif %}
 					</div>
 				</div>

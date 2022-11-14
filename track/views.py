@@ -27,11 +27,22 @@ def track(request):
     user_agent = request.META.get("HTTP_USER_AGENT", None)
     user_agent_data = user_agent_parser(user_agent)
     origin = request.META.get("HTTP_ORIGIN", None)
+    trackable_event = TrackableEvent.objects.filter(
+        name=event_name, type=event_type, track_id=track
+    )
+    if trackable_event.exists():
+        trackable_event = trackable_event[0]
+    else:
+        trackable_event = TrackableEvent.objects.filter(type=event_type, track_id=track)
+        if trackable_event.exists():
+            trackable_event = trackable_event[0]
+        else:
+            return JsonResponse({"success": False, "error": "Invalid event type"})
+
     TrackEvent.objects.create(
         track_id=track,
-        name=event_name,
+        event=trackable_event,
         ip_address=request.META.get("REMOTE_ADDR"),
-        type=event_type,
         user_agent=user_agent,
         device_type=user_agent_data.device.family,
         browser=user_agent_data.browser.family,
@@ -73,11 +84,12 @@ def get_track_data(request, trackId):
     if track.exists() and track[0].user == request.user:
         track = track[0]
 
-        # Get the events group by timestamp and count
+        # Get the events group by timestamp with only date and count
         events = (
             TrackEvent.objects.filter(track_id=track)
-            .values("timestamp")
-            .annotate(count=Count("timestamp"))
+            .extra(select={"date": "date(timestamp)"})
+            .values("date")
+            .annotate(count=Count("id"))
         )
 
         trackable_events = TrackableEvent.objects.filter(track_id=track)
@@ -88,7 +100,7 @@ def get_track_data(request, trackId):
             for event in events.filter(event=trackable_event):
                 event_data.append(
                     {
-                        "x": event["timestamp"],
+                        "x": event["date"],
                         "y": event["count"],
                     }
                 )

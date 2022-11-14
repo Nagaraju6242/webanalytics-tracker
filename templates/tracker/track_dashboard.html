@@ -5,7 +5,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 <main class="my-4 mx-3">
-	<h2>Welcome Peter</h2>
+	<h2>Welcome {{ request.user.first_name }}</h2>
+
+	<div class="my-5">
+		<h6>Paste this code in your frontend webpage</h6>
+		<code>{{ frontend_snippet_code }}</code>
+	</div>
 
 	<section class="trackable-data">
 		<div class="trackers d-flex justify-content-between mt-5">
@@ -135,10 +140,26 @@
 									x: {
 										type: 'time',
 										time: {
-											unit: 'month'
+											unit: 'day'
+										},
+										title: {
+											display: true,
+											text: 'Date'
+										}
+									},
+									y: {
+										beginAtZero: true,
+										ticks: {
+											stepSize: 1
+										},
+										title: {
+											display: true,
+											text: 'Count of Events'
 										}
 									}
 								}
+								 
+								
 							}
 						});
 					}

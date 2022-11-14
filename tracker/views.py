@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-
+from django.contrib.auth.models import User
 from track.models import Track, TrackableEvent, TrackEvent
 from track.forms import TrackableEventForm
 import apache_log_parser
 from user_agents import parse as user_agent_parser
+from django.contrib.auth import logout as auth_logout
+from django.contrib.auth import login as auth_login, authenticate
+from tracker.utils import get_frontend_snippet
 
 
 def home(request):
@@ -17,6 +20,38 @@ def dashboard(request):
     tracks = Track.objects.filter(user=request.user)
     print(tracks)
     return render(request, "tracker/dashboard.html", {"tracks": tracks})
+
+
+def login(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            auth_login(request, user)
+            return redirect("dashboard")
+    return render(request, "tracker/login.html")
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        user = User.objects.create_user(username=username, password=password)
+        user.save()
+        auth_login(request, user)
+        return redirect("dashboard")
+    return render(request, "tracker/login.html")
+
+
+@login_required
+def logout(request):
+    auth_logout(request)
+    return redirect("home")
 
 
 @login_required
@@ -43,6 +78,7 @@ def track_dashboard(request, trackId):
         return redirect("track_dashboard", trackId=trackId)
 
     trackable_events_form.fields["track_id"].initial = track
+    frontend_snippet_code = get_frontend_snippet(trackId)
 
     return render(
         request,
@@ -52,6 +88,7 @@ def track_dashboard(request, trackId):
             "trackable_events": trackable_events,
             "track_events": track_events,
             "trackable_events_form": trackable_events_form,
+            "frontend_snippet_code": frontend_snippet_code,
         },
     )
 

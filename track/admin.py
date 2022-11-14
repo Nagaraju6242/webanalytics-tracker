@@ -4,10 +4,12 @@ from .models import Track, TrackEvent, TrackableEvent
 # Register your models here.
 class TrackAdmin(admin.ModelAdmin):
     list_display = ["track_id", "user", "track_name", "active"]
+    list_filter = ["user", "active"]
 
 
 class TrackClickAdmin(admin.ModelAdmin):
     list_display = ["track_id", "get_name", "get_type", "timestamp"]
+    list_filter = ["track_id", "event"]
 
     def get_name(self, obj):
         return obj.event.name

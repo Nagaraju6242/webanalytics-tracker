@@ -133,3 +133,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 2000
+
+
+FRONTEND_JS_SNIPPET = """
+    const track_url="http://127.0.0.1:8000/api/track/",trackId="LOD9755CQT",trackable_events_url=`http://127.0.0.1:8000/api/trackable_events/${trackId}/`;var head=document.getElementsByTagName("head")[0],script=document.createElement("script");async function sendData(t){return t.origin=location.origin,t.trackId=trackId,await (res=await fetch("http://127.0.0.1:8000/api/track/",t=config={method:"POST",body:JSON.stringify(t)})).json()}async function handler(){sendData(pageLoadData={eventType:"pageview",eventName:document.title}),add_event_listeners(trackable_events=await get_trackable_events())}async function get_trackable_events(){return"ok"==(data=await (response=await fetch(trackable_events_url)).json()).status?data.data:null}function add_event_listeners(t){t.forEach(t=>{"click"==t.type&&(selector="",t.html_selector?selector=html_selector:(t.html_tag&&(selector+=t.html_tag),t.html_id&&(selector+=`#${t.html_id}`),t.html_class&&(selector+=`.${t.html_class}`)),$(selector).on("click",function(e){e.preventDefault(),sendData(clickData={eventType:"click",eventName:t.name})}))})}script.type="text/javascript",script.src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js",script.onreadystatechange=handler,script.onload=handler,head.appendChild(script);
+"""

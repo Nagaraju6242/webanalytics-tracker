@@ -7,6 +7,7 @@ from django.utils import timezone
 EVENT_TYPE = (
     ("click", "Click"),
     ("pageview", "Pageview"),
+    ("scroll", "Scroll"),
 )
 
 

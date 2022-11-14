@@ -1,1 +1,15 @@
-{% extends 'base.html' %} {% block content %} {% endblock content %}
+{% extends 'base.html' %} {% load static %}
+
+
+{% block content %}
+
+<style>
+    img.main-img{
+        display: block;
+        margin: 20px auto;
+        height: 80vh;
+    }
+</style>
+
+<img class="main-img" src="{% static 'images/main.png' %}" alt="">
+{% endblock content %}
